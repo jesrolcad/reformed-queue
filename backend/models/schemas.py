@@ -5,3 +5,6 @@ class Song(BaseModel):
     artista: str
     titulo: str
     imagen: str
+
+class AccessToken(BaseModel):
+    access_token: str
