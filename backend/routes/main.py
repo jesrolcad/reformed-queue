@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Header
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 import os
 import requests
 import base64
+from models.schemas import AccessToken
 
 load_dotenv()
 
@@ -13,7 +14,7 @@ REDIRECT_URI = os.getenv("REDIRECT_URI")
 
 app = FastAPI()
 
-@app.get('/login')
+@app.get('/')
 def main():
     url = "https://accounts.spotify.com/authorize?"
     url += "client_id=" + CLIENT_ID
@@ -46,5 +47,18 @@ def access_token(code: str):
     response_json = response.json()
     
     return response_json
-    
+
+
+@app.post('/search')
+#Header with access-token
+def search(query: str, access_token: str = Header()):
+
+    headers = {
+        "Authorization": f'Bearer {access_token}'
+    }
+
+    response = requests.get(f"https://api.spotify.com/v1/search?q={query}&type=track", headers=headers)
+    response_json = response.json()
+
+    return response_json
 
