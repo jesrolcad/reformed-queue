@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class Song(BaseModel):
-    id: int 
+    id: str 
     artista: str
     titulo: str
     imagen: str
