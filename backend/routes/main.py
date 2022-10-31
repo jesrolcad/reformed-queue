@@ -7,6 +7,9 @@ import base64
 import sys
 import json
 
+from fastapi.middleware.cors import CORSMiddleware
+
+
 # getting the name of the directory
 # where the this file is present.
 current = os.path.dirname(os.path.realpath(__file__))
@@ -25,17 +28,30 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("SECRET_ID")
-REDIRECT_URI = os.getenv("REDIRECT_URI")
+REDIRECT_URI_BACKEND = os.getenv("REDIRECT_URI_BACKEND")
+REDIRECT_URI_FRONTEND = os.getenv("REDIRECT_URI_FRONTEND")
 DEVICE_ID = os.getenv("DEVICE_ID")
 
 app = FastAPI()
 
+origins = ["*"]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get('/')
 def main():
+    print("LLEGA AL ENDPOINT /")
     url = "https://accounts.spotify.com/authorize?"
     url += "client_id=" + CLIENT_ID
     url += "&response_type=code"
-    url += "&redirect_uri=" + REDIRECT_URI
+    url += "&redirect_uri=" + REDIRECT_URI_FRONTEND
     url += "&show_dialog=true"
     url += "&scope=user-modify-playback-state,user-read-private"
 
@@ -44,6 +60,8 @@ def main():
 
 @app.get('/access-token')
 def access_token(code: str):
+
+    print("ENTRA EN EL ENDPOINT DEL ACCESS TOKEN")
 
 
     client_credentials = f'{CLIENT_ID}:{CLIENT_SECRET}'
@@ -57,19 +75,19 @@ def access_token(code: str):
     body = {
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": REDIRECT_URI,
+        "redirect_uri": REDIRECT_URI_FRONTEND,
     }
 
     response = requests.post("https://accounts.spotify.com/api/token", data=body, headers=headers)
     response_json = response.json()
-
-    print(response_json)
     
     return response_json
 
 
 @app.post('/search')
 def search(query: str, access_token: str = Header()):
+
+    print(access_token)
 
     headers = {
         "Authorization": f'Bearer {access_token}'
@@ -91,7 +109,7 @@ def search(query: str, access_token: str = Header()):
             artista = get_artists_song(artists)
             id = song["uri"]
             titulo = song["name"]
-            imagen = song["album"]["images"][1]["url"]
+            imagen = song["album"]["images"][2]["url"]
 
             s = Song(id=id, artista=artista, titulo=titulo, imagen=imagen)
             song_list.append(s)
