@@ -134,7 +134,7 @@ def get_artists_song(artists):
 
 
 
-@app.post('/add-song-to-queue')
+@app.post("/add-song-to-queue/{song_id}")
 def add_song_to_queue(song_id: str, access_token: str = Header()):
 
     headers = {
@@ -143,14 +143,17 @@ def add_song_to_queue(song_id: str, access_token: str = Header()):
     }
 
     response = requests.post(f"https://api.spotify.com/v1/me/player/queue?uri={song_id}&device_id={DEVICE_ID}", headers=headers)
-
-    print(response.json())
+    print(response.status_code)
+    print(response.text)
 
     if response.status_code == 204:
-        return JSONResponse(status_code=204, content={"message": "Canción agregada a la cola"})
+        return {"message": "Canción agregada a la cola"}
 
     elif response.status_code == 400:
         return JSONResponse(status_code=400, content={"message": "No se pudo añadir la canción a la cola. Id de canción no válido"})
+
+    elif response.status_code == 404:
+        return JSONResponse(status_code=404, content={"message": "No se pudo añadir la canción a la cola. Id de dispositivo no válido"})
 
     elif response.status_code == 403:
         return JSONResponse(status_code=403, content={"message": "No se pudo añadir la canción a la cola. No tienes permisos para agregar canciones"})
