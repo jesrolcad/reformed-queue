@@ -6,6 +6,7 @@ import requests
 import base64
 import sys
 import json
+from services import auth_service, song_service
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -47,116 +48,22 @@ app.add_middleware(
 
 @app.get('/')
 def main():
-    print("LLEGA AL ENDPOINT /")
-    url = "https://accounts.spotify.com/authorize?"
-    url += "client_id=" + CLIENT_ID
-    url += "&response_type=code"
-    url += "&redirect_uri=" + REDIRECT_URI_FRONTEND
-    url += "&show_dialog=true"
-    url += "&scope=user-modify-playback-state,user-read-private"
-
-    return RedirectResponse(url)
+    return auth_service.redirect_url_auth()
 
 
 @app.get('/access-token')
 def access_token(code: str):
-
-    print("ENTRA EN EL ENDPOINT DEL ACCESS TOKEN")
-
-
-    client_credentials = f'{CLIENT_ID}:{CLIENT_SECRET}'
-    client_credentials_b64 = base64.b64encode(client_credentials.encode())
-
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": f'Basic {client_credentials_b64.decode()}'
-    }
-
-    body = {
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": REDIRECT_URI_FRONTEND,
-    }
-
-    response = requests.post("https://accounts.spotify.com/api/token", data=body, headers=headers)
-    response_json = response.json()
-    
-    return response_json
+    return auth_service.get_access_token(code)
 
 
 @app.post('/search')
 def search(query: str, access_token: str = Header()):
-
-    print(access_token)
-
-    headers = {
-        "Authorization": f'Bearer {access_token}'
-    }
-
-    response = requests.get(f"https://api.spotify.com/v1/search?q={query}&type=track", headers=headers)
-    response_json = response.json()
-
-    if response.status_code == 200:
-
-        songs = response_json["tracks"]["items"]
-        song_list = []
-
-        for song in songs:
-            id = ''
-            titulo = ''
-            imagen = ''
-            artists = song["artists"]
-            artista = get_artists_song(artists)
-            id = song["uri"]
-            titulo = song["name"]
-            imagen = song["album"]["images"][2]["url"]
-
-            s = Song(id=id, artista=artista, titulo=titulo, imagen=imagen)
-            song_list.append(s)
-
-        return {"songs":song_list}
-
-    else:
-        return JSONResponse(status_code=response.status_code, content={"message": "Error al realizar la búsqueda. Inténtelo más tarde"})
-
-def get_artists_song(artists):
-    artista = ''
-    if len(artists) > 1:
-        for i in range(0, len(artists)):
-            if i != len(artists) - 1:
-                artista += artists[i]["name"] + ", "
-            else:
-                artista += artists[i]["name"]
-    else:
-        artista = artists[0]["name"]
-
-    return artista
+    return song_service.search_song(query, access_token)
 
 
-
-@app.post('/add-song-to-queue')
+@app.post("/add-song-to-queue/{song_id}")
 def add_song_to_queue(song_id: str, access_token: str = Header()):
-
-    headers = {
-        "Authorization": f'Bearer {access_token}',
-        "Content-Type": "application/json"
-    }
-
-    response = requests.post(f"https://api.spotify.com/v1/me/player/queue?uri={song_id}&device_id={DEVICE_ID}", headers=headers)
-
-    print(response.json())
-
-    if response.status_code == 204:
-        return JSONResponse(status_code=204, content={"message": "Canción agregada a la cola"})
-
-    elif response.status_code == 400:
-        return JSONResponse(status_code=400, content={"message": "No se pudo añadir la canción a la cola. Id de canción no válido"})
-
-    elif response.status_code == 403:
-        return JSONResponse(status_code=403, content={"message": "No se pudo añadir la canción a la cola. No tienes permisos para agregar canciones"})
-
-    elif response.status_code == 429:
-        return JSONResponse(status_code=429, content={"message": "El sistema se encuentra saturado. Inténtelo más tarde"})
+    return song_service.add_song_to_queue(song_id, access_token)
 
 
 
