@@ -25,6 +25,7 @@ def search_song(query: str, access_token: str):
 
     response = requests.get(f"https://api.spotify.com/v1/search?q={query}&type=track", headers=headers)
     response_json = response.json()
+    print(response_json)
 
     if response.status_code == 200:
 
@@ -46,8 +47,18 @@ def search_song(query: str, access_token: str):
 
         return {"songs":song_list}
 
-    else:
-        return JSONResponse(status_code=response.status_code, content={"message": "Error al realizar la búsqueda. Inténtelo más tarde"})
+    elif response.status_code == 400:
+        return JSONResponse(status_code=400, content={"message": "Inserte un término de búsqueda"})
+
+    elif response.status_code == 401:
+        return JSONResponse(status_code=401, content={"message": "Token de acceso no válido o expirado. Vuelve a iniciar sesión"})
+
+    elif response.status_code == 403:
+        return JSONResponse(status_code=403, content={"message": "No tienes permisos para buscar canciones"})
+        
+    elif response.status_code == 429:
+        return JSONResponse(status_code=429, content={"message": "El sistema se encuentra saturado. Inténtelo más tarde"})
+
 
 def get_artists_song(artists: list)->str:
     """
@@ -94,7 +105,7 @@ def add_song_to_queue(song_id: str, access_token: str):
         return JSONResponse(status_code=400, content={"message": "No se pudo añadir la canción a la cola. Id de canción no válido"})
 
     elif response.status_code == 404:
-        return JSONResponse(status_code=404, content={"message": "No se pudo añadir la canción a la cola. Id de dispositivo no válido"})
+        return JSONResponse(status_code=404, content={"message": "No se pudo añadir la canción a la cola. Dispositivo no válido o inactivo"})
 
     elif response.status_code == 403:
         return JSONResponse(status_code=403, content={"message": "No se pudo añadir la canción a la cola. No tienes permisos para agregar canciones"})

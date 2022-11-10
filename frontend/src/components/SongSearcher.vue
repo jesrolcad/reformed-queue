@@ -11,7 +11,6 @@
             <div class="control">
                 <button class="button is-primary" @click="searchSongs">Buscar</button>
             </div>
-            <p v-if="this.message.length > 0">Mensaje: {{ this.message }}</p>
         </div>
 
         <!-- Create a table to show the results -->
@@ -44,16 +43,38 @@
 
 <script>
 
+import { useToast } from "vue-toastification";
+
 export default {
     data() {
         return {
             search: '',
-            songs: [],
-            message: ''
+            songs: []
         }
     },
 
     methods: {
+
+        // Función para mostrar notificaciones. Recibe mensaje a enviar (message) y tipo de notificación (type), que toma valores "info" o "error"
+        showNotification(message, type) {
+
+            const toast = useToast();
+            const options = {
+                    position: "bottom-right", timeout: 3000, closeOnClick: true, pauseOnFocusLoss: true, pauseOnHover: true,
+                    draggable: true, draggablePercent: 0.6, showCloseButtonOnHover: true, hideProgressBar: true, closeButton: "button",
+                    icon: true, rtl: false
+                }
+
+            if (type == 'info') {
+                toast.info(message, options);
+            }
+
+            else {
+                toast.error(message, options);
+            }
+
+        },
+
         async searchSongs() {
 
             try {
@@ -63,9 +84,21 @@ export default {
                     },
                     method: 'POST'
                 });
+                let status_code = response.status;
                 let data = await response.json();
-                this.songs = data.songs;
-                console.log(this.songs);
+
+                if (status_code == 200) {
+                    this.songs = data.songs;
+
+                } else {
+                    if (status_code != 422) {
+                        this.message = data.message;
+                    } else {
+                        this.message = "Por favor, introduce un término de búsqueda"
+                    }
+                    
+                    this.showNotification(this.message, 'error');
+                }
             }
 
             catch (error) {
@@ -81,10 +114,19 @@ export default {
                     },
                     method: 'POST'
                 })
-
+                
+                let status_code = response.status;
                 let data = await response.json();
-                console.log(data);
-                this.message = data.message;
+                let message = data.message;
+
+                if (status_code == 204) {
+                    this.showNotification(message, 'info');
+                }
+
+                else {
+                    
+                    this.showNotification(message, 'error');
+                }
 
 
             } catch (e) {

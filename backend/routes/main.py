@@ -1,11 +1,7 @@
-from fastapi import FastAPI, Request, Header
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi import FastAPI, Header, Query
 from dotenv import load_dotenv
 import os
-import requests
-import base64
 import sys
-import json
 from services import auth_service, song_service
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -57,8 +53,9 @@ def access_token(code: str):
 
 
 @app.post('/search')
-def search(query: str, access_token: str = Header()):
+def search(query: str = Query(min_length=1), access_token: str = Header()):
     return song_service.search_song(query, access_token)
+
 
 
 @app.post("/add-song-to-queue/{song_id}")
