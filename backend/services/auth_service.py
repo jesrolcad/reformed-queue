@@ -9,6 +9,7 @@ import requests
 import base64
 
 # Configuración de variables de entorno
+load_dotenv()
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("SECRET_ID")
 REDIRECT_URI_BACKEND = os.getenv("REDIRECT_URI_BACKEND")
