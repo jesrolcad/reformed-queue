@@ -32,8 +32,10 @@ export default {
                 });
                 
                 let data = await response.json();
-                console.log(data);
-                localStorage.setItem('access-token', data.access_token);
+                if (data.access_token) {
+                    localStorage.setItem('access-token', data.access_token);
+                }
+                
 
             } catch (e) {
                 console.log(e);
