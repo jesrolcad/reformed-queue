@@ -22,10 +22,8 @@ router.beforeEach( (to, from) => {
 
     //Si se quiere acceder a una ruta que requiere autenticación y no hay token(última condición para evitar login infinito)
     if('auth' in to.meta && to.meta.auth && (!token || token == 'undefined') && to.name === 'AuthSpotify'){ 
-        console.log("ENTRA PRIMERA CONDICIÓN")
         return {name: 'AuthSpotify'}
     }else if('auth' in to.meta && !to.meta.auth && token && token != 'undefined'){ //Si no se requiere autenticación y hay token
-        console.log("ENTRA SEGUNDA CONDICIÓN")
         return {name: 'SongSearcher'}}
     
 
