@@ -1,15 +1,22 @@
 <template>
 
     <div>
-
-        <h1> Buscador de canciones</h1>
+        <div class="mb-3">
+            <h1> Buscador de canciones</h1>
+        </div>
         <!-- Create a simple searcher -->
-        <div class="field has-addons">
-            <div class="control">
-                <input class="input" type="text" placeholder="Nombre de la canción / Artista" v-model="search">
-            </div>
-            <div class="control">
-                <button class="button is-primary" @click="searchSongs">Buscar</button>
+        <div class="container text-center">
+            <div class="row justify-content-start">
+                <div class="col-xs-4">
+                    <input v-on:keyup.enter="searchSongs" class="text-center" type="text"
+                        placeholder="Canción / Artista" v-model="search">
+
+                    <button class="border border-0 bg-transparent ms-1" @click="searchSongs">
+                        <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="fa-xl text-secondary"
+                            title="Buscar">
+                        </font-awesome-icon>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -28,7 +35,8 @@
                         <td>{{ song.titulo }}</td>
                         <td>{{ song.artista }}</td>
                         <td><img :src="song.imagen"></td>
-                        <td><button class="button is-primary" @click="addToQueue(song.id)"> Añadir a cola</button></td>
+                        <td><button class="btn btn-outline-primary" @click="addToQueue(song.id)"> Añadir a
+                                cola</button></td>
                         <!-- <td>
                         <button class="button is-primary" @click="addSongToPlaylist(song.id)">Añadir a playlist</button>
                     </td> -->
@@ -60,10 +68,10 @@ export default {
 
             const toast = useToast();
             const options = {
-                    position: "bottom-right", timeout: 3000, closeOnClick: true, pauseOnFocusLoss: true, pauseOnHover: true,
-                    draggable: true, draggablePercent: 0.6, showCloseButtonOnHover: true, hideProgressBar: true, closeButton: "button",
-                    icon: true, rtl: false
-                }
+                position: "bottom-right", timeout: 3000, closeOnClick: true, pauseOnFocusLoss: true, pauseOnHover: true,
+                draggable: true, draggablePercent: 0.6, showCloseButtonOnHover: true, hideProgressBar: true, closeButton: "button",
+                icon: true, rtl: false
+            }
 
             if (type == 'info') {
                 toast.info(message, options);
@@ -96,7 +104,7 @@ export default {
                     } else {
                         this.message = "Por favor, introduce un término de búsqueda"
                     }
-                    
+
                     this.showNotification(this.message, 'error');
                 }
             }
@@ -114,7 +122,7 @@ export default {
                     },
                     method: 'POST'
                 })
-                
+
                 let status_code = response.status;
                 let data = await response.json();
                 let message = data.message;
@@ -124,7 +132,7 @@ export default {
                 }
 
                 else {
-                    
+
                     this.showNotification(message, 'error');
                 }
 
