@@ -25,7 +25,6 @@ def search_song(query: str, access_token: str):
 
     response = requests.get(f"https://api.spotify.com/v1/search?q={query}&type=track", headers=headers)
     response_json = response.json()
-    print(response_json)
 
     if response.status_code == 200:
 

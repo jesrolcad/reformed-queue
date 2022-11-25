@@ -5,7 +5,7 @@
             <h1> Buscador de canciones</h1>
         </div>
         <!-- Create a simple searcher -->
-        <div class="container text-center">
+        <div class="container text-center mb-3">
             <div class="row justify-content-start">
                 <div class="col-xs-4">
                     <input v-on:keyup.enter="searchSongs" class="text-center" type="text"
@@ -20,31 +20,31 @@
             </div>
         </div>
 
-        <!-- Create a table to show the results -->
         <div v-if="this.songs.length > 0">
-            <table class="table is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Artista</th>
-                        <th>Imagen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="song in this.songs" :key="song.id">
-                        <td>{{ song.titulo }}</td>
-                        <td>{{ song.artista }}</td>
-                        <td><img :src="song.imagen"></td>
-                        <td><button class="btn btn-outline-primary" @click="addToQueue(song.id)"> Añadir a
-                                cola</button></td>
-                        <!-- <td>
-                        <button class="button is-primary" @click="addSongToPlaylist(song.id)">Añadir a playlist</button>
-                    </td> -->
-                    </tr>
-                </tbody>
-            </table>
+            <div class="container">
+                <!-- Esta es la columna que me alinea  -->
+                <div class="col-xs-6 justify-content-center" v-for="song in songs" :key="song.id">
+                    <div class="col-8">   
+                        <div class="card mb-3 border-0">
+                            <div class="row">
+                                <div class="col-md-4 align-self-center img-container">
+                                    <img :src="song.imagen" alt="...">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ song.artista }} - {{ song.titulo }}</h5>
+                                        <button class="btn btn-primary" @click="addToQueue(song.id)">Añadir a
+                                            cola</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 
 
 </template>
