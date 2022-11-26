@@ -5,7 +5,7 @@
             <h1> Buscador de canciones</h1>
         </div>
         <!-- Create a simple searcher -->
-        <div class="container text-center">
+        <div class="container text-center mb-3">
             <div class="row justify-content-start">
                 <div class="col-xs-4">
                     <input v-on:keyup.enter="searchSongs" class="text-center" type="text"
@@ -20,31 +20,29 @@
             </div>
         </div>
 
-        <!-- Create a table to show the results -->
         <div v-if="this.songs.length > 0">
-            <table class="table is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Artista</th>
-                        <th>Imagen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="song in this.songs" :key="song.id">
-                        <td>{{ song.titulo }}</td>
-                        <td>{{ song.artista }}</td>
-                        <td><img :src="song.imagen"></td>
-                        <td><button class="btn btn-outline-primary" @click="addToQueue(song.id)"> Añadir a
-                                cola</button></td>
-                        <!-- <td>
-                        <button class="button is-primary" @click="addSongToPlaylist(song.id)">Añadir a playlist</button>
-                    </td> -->
-                    </tr>
-                </tbody>
-            </table>
+            <div class="container">
+                <div class="card mb-3 w-50 h-50 mx-auto" v-for="song in songs" :key="song.id">
+                    <div class="row d-flex align-items-center">
+                        <div class=" resize col-sm-5">
+                            <img :src="song.imagen" alt="...">
+                        </div>
+                        <div class="col-4 md-auto d-flex mt-3">
+                            <div class="card-body">
+                            <h5 class="mb-0">{{ song.titulo }}</h5>
+                            <p>{{ song.artista }}</p>
+                        </div>
+                        </div>
+                        <div class="col">
+                            <font-awesome-icon icon="fa-solid fa-plus" class="fa-xl" @click="addToQueue(song.id)" title="Añadir a la cola">Añadir a
+                                cola</font-awesome-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 
 
 </template>
