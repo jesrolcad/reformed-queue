@@ -22,22 +22,20 @@
 
         <div v-if="this.songs.length > 0">
             <div class="container">
-                <!-- Esta es la columna que me alinea  -->
-                <div class="col-xs-6 justify-content-center" v-for="song in songs" :key="song.id">
-                    <div class="col-8">   
-                        <div class="card mb-3 border-0">
-                            <div class="row">
-                                <div class="col-md-4 align-self-center img-container">
-                                    <img :src="song.imagen" alt="...">
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ song.artista }} - {{ song.titulo }}</h5>
-                                        <button class="btn btn-primary" @click="addToQueue(song.id)">Añadir a
-                                            cola</button>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="card mb-3 w-50 h-50 mx-auto" v-for="song in songs" :key="song.id">
+                    <div class="row d-flex align-items-center">
+                        <div class=" resize col-sm-5">
+                            <img :src="song.imagen" alt="...">
+                        </div>
+                        <div class="col-4 md-auto d-flex mt-3">
+                            <div class="card-body">
+                            <h5 class="mb-0">{{ song.titulo }}</h5>
+                            <p>{{ song.artista }}</p>
+                        </div>
+                        </div>
+                        <div class="col">
+                            <font-awesome-icon icon="fa-solid fa-plus" class="fa-xl" @click="addToQueue(song.id)" title="Añadir a la cola">Añadir a
+                                cola</font-awesome-icon>
                         </div>
                     </div>
                 </div>

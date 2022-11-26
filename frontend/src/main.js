@@ -14,10 +14,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import the icons you want to use */
-import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
+import {faMagnifyingGlass, faPlus} from '@fortawesome/free-solid-svg-icons'
 
 /* add the imported icons to the library */
-library.add(faMagnifyingGlass)
+library.add(faMagnifyingGlass, faPlus)
 
 const options = {
     transition: "Vue-Toastification__fade",
