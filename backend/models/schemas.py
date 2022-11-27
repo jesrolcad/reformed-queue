@@ -8,3 +8,6 @@ class Song(BaseModel):
 
 class AccessToken(BaseModel):
     access_token: str
+
+class Message(BaseModel): 
+    message: str
