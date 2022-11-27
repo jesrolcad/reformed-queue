@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Header, Query
+from typing import List
 from dotenv import load_dotenv
 import os
 import sys
@@ -19,7 +20,7 @@ parent = os.path.dirname(current)
 # the sys.path.
 sys.path.append(parent)
 
-from models.schemas import Song
+from models.schemas import Message, Song
 
 load_dotenv()
 
@@ -29,7 +30,8 @@ REDIRECT_URI_BACKEND = os.getenv("REDIRECT_URI_BACKEND")
 REDIRECT_URI_FRONTEND = os.getenv("REDIRECT_URI_FRONTEND")
 DEVICE_ID = os.getenv("DEVICE_ID")
 
-app = FastAPI()
+app = FastAPI(title="FastQueue",
+description="API para añadir canciones a la cola de Spotify de un dispositivo concreto. Se necesita autenticación vía Spotify para obtener el token de acceso")
 
 origins = ["*"]
 
@@ -42,23 +44,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/')
+@app.get('/', include_in_schema=False)
 def main():
     return auth_service.redirect_url_auth()
 
 
-@app.get('/access-token')
+@app.get('/access-token', include_in_schema=False)
 def access_token(code: str):
     return auth_service.get_access_token(code)
 
 
-@app.post('/search')
+@app.get('/search', summary="Búsqueda de canción por título o artista", tags=["Canciones"], response_model=List[Song],
+responses={400: {"model": Message, "description":"Id de canción no válido"}, 403: {"model": Message, "description":"Sin permisos"}, 
+404: {"model": Message, "description": "Recurso no encontrado"}, 429: {"model": Message, "description":"Sistema saturado"}})
 def search(query: str = Query(min_length=1), access_token: str = Header()):
     return song_service.search_song(query, access_token)
 
 
-
-@app.post("/add-song-to-queue/{song_id}")
+@app.post("/add-song-to-queue/{song_id}", summary="Añadir canción a la cola del dispositivo", tags=["Canciones"],
+responses={400: {"model": Message, "description":"Id de canción no válido"}, 403: {"model": Message, "description":"Sin permisos"}, 
+404: {"model": Message, "description": "Recurso no encontrado"}, 429: {"model": Message, "description":"Sistema saturado"}})
 def add_song_to_queue(song_id: str, access_token: str = Header()):
     return song_service.add_song_to_queue(song_id, access_token)
 
