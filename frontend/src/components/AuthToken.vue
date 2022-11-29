@@ -1,10 +1,6 @@
 <template>
 
     <div>
-        <h1> Página de Token</h1>
-        <p> Código de acceso obtenido correctamente</p>
-        <!-- Create a button -->
-        <button class="button is-primary" @click="redirectToSearcher">Buscar canciones</button>
     </div>
 
 </template>
@@ -34,6 +30,10 @@ export default {
                 let data = await response.json();
                 if (data.access_token) {
                     localStorage.setItem('access-token', data.access_token);
+                    window.location.href = 'http://localhost:8080/searcher';
+                } // else redirect to /
+                else {
+                    window.location.href = 'http://localhost:8080';
                 }
                 
 
