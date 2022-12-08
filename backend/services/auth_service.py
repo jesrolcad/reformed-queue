@@ -61,5 +61,7 @@ def get_access_token(code: str)->dict:
 
     response = requests.post("https://accounts.spotify.com/api/token", data=body, headers=headers)
 
+    print(response.json());
+
     return response.json() 
 
