@@ -63,3 +63,24 @@ def get_access_token(code: str)->dict:
 
     return response.json() 
 
+
+def check_token(access_token: str):
+    """
+        Función que permite comprobar si el token de acceso es válido.
+        Parámetros de entrada:
+            - access_token (str): Token de acceso a la API de Spotify
+    """
+
+    headers = {'Content-Type': 'application-json', 'Authorization': f'Bearer {access_token}'}
+
+    response = requests.get("https://api.spotify.com/v1/me", headers=headers)
+
+    if response.status_code == 200:
+        return {'valid_token': True}
+
+    else:
+        return {'valid_token': False}
+
+
+
+    

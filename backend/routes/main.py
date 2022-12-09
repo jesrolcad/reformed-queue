@@ -54,6 +54,12 @@ def access_token(code: str):
     return auth_service.get_access_token(code)
 
 
+@app.get('/check-token', include_in_schema=False)
+def check_token(access_token: str = Header()):
+    return auth_service.check_token(access_token)
+
+
+
 @app.get('/search', summary="Búsqueda de canción por título o artista", tags=["Canciones"], response_model=List[Song],
 responses={400: {"model": Message, "description":"Id de canción no válido"}, 403: {"model": Message, "description":"Sin permisos"}, 
 404: {"model": Message, "description": "Recurso no encontrado"}, 429: {"model": Message, "description":"Sistema saturado"}})
