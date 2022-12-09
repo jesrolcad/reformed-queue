@@ -101,6 +101,9 @@ export default {
                 } else {
                     if (status_code != 422) {
                         this.message = data.message;
+                        if (status_code == 401) {
+                            this.$router.push('/auth');
+                        }
                     } else {
                         this.message = "Por favor, introduce un término de búsqueda"
                     }

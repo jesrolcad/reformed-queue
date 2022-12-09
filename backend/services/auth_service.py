@@ -81,6 +81,3 @@ def check_token(access_token: str):
     else:
         return {'valid_token': False}
 
-
-
-    
