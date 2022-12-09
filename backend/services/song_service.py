@@ -44,7 +44,7 @@ def search_song(query: str, access_token: str):
             s = Song(id=id, artista=artista, titulo=titulo, imagen=imagen)
             song_list.append(s)
 
-        return {"songs":song_list}
+        return song_list
 
     elif response.status_code == 400:
         return JSONResponse(status_code=400, content={"message": "Inserte un término de búsqueda"})
