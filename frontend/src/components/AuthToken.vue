@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import VueCookies from "vue-cookies";
 
 export default {
     data() {
@@ -29,9 +30,9 @@ export default {
                 
                 let data = await response.json();
                 if (data.access_token) {
-                    localStorage.setItem('access-token', data.access_token);
+                    VueCookies.set("access-token", data.access_token, {httpOnly: true, secure: true});
                     window.location.href = 'http://localhost:8080/searcher';
-                } // else redirect to /
+                }
                 else {
                     window.location.href = 'http://localhost:8080';
                 }

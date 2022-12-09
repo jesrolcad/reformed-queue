@@ -50,6 +50,7 @@
 <script>
 
 import { useToast } from "vue-toastification";
+import VueCookies from "vue-cookies";
 
 export default {
     data() {
@@ -86,15 +87,16 @@ export default {
             try {
                 let response = await fetch('http://localhost:8000/search?query=' + this.search, {
                     headers: {
-                        'access-token': localStorage.getItem('access-token')
+                        'access-token': VueCookies.get("access-token")
                     },
-                    method: 'POST'
+                    method: 'GET'
                 });
                 let status_code = response.status;
                 let data = await response.json();
+                console.log(data);
 
                 if (status_code == 200) {
-                    this.songs = data.songs;
+                    this.songs = data;
 
                 } else {
                     if (status_code != 422) {

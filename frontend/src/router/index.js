@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import VueCookies from 'vue-cookies'
 
 const routes = [
     { path: '/auth', name: 'AuthSpotify', component: () => import('../components/AuthSpotify.vue'), meta: { auth: false } },
@@ -13,7 +14,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    let token = localStorage.getItem("access-token");
+    let token = VueCookies.get("access-token");
 
     if ("auth" in to.meta && to.meta.auth && (!token || token == "undefined") && to.name === "AuthSpotify") {
         next({
