@@ -102,7 +102,7 @@ export default {
                     if (status_code != 422) {
                         this.message = data.message;
                         if (status_code == 401) {
-                            this.$router.push('/auth');
+                            this.$router.push('/');
                         }
                     } else {
                         this.message = "Por favor, introduce un término de búsqueda"
@@ -121,13 +121,15 @@ export default {
             try {
                 let response = await fetch('http://localhost:8000/add-song-to-queue/' + songId, {
                     headers: {
-                        'access-token': localStorage.getItem('access-token')
+                        'access-token': VueCookies.get("access-token")
                     },
                     method: 'POST'
                 })
 
+
                 let status_code = response.status;
                 let data = await response.json();
+                console.log(data);
                 let message = data.message;
 
                 if (status_code == 204) {
