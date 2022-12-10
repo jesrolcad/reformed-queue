@@ -27,15 +27,15 @@
                         <div class=" resize col-sm-5">
                             <img :src="song.imagen" alt="...">
                         </div>
-                        <div class="col-4 md-auto d-flex mt-3">
+                        <div class="col-md md-auto d-flex mt-3">
                             <div class="card-body">
                             <h5 class="mb-0">{{ song.titulo }}</h5>
                             <p>{{ song.artista }}</p>
                         </div>
                         </div>
                         <div class="col">
-                            <font-awesome-icon icon="fa-solid fa-plus" class="fa-xl" @click="addToQueue(song.id)" title="Añadir a la cola">Añadir a
-                                cola</font-awesome-icon>
+                            <button class="border border-0 bg-transparent"><font-awesome-icon icon="fa-solid fa-plus" class="fa-xl" @click="addToQueue(song.id)" title="Añadir a la cola">Añadir a
+                                cola</font-awesome-icon></button>
                         </div>
                     </div>
                 </div>
